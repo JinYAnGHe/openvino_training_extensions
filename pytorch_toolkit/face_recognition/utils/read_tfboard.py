@@ -1,0 +1,36 @@
+from tensorboard.backend.event_processing import event_accumulator
+
+ea=event_accumulator.EventAccumulator('../logs_landm/2019_08_04_14_38_LandNet-NoSE/events.out.tfevents.1564900704.Workstation')
+ea.Reload()
+# print(ea.scalars.Keys())
+# ea1=event_accumulator.EventAccumulator('./dsm_aug/eval_0/events.out.tfevents.1562407251.Workstation')
+# ea1.Reload()
+# print(ea.scalars.Keys())
+
+# print([(i.step, i.value) for i in class_loss])
+import matplotlib.pyplot as plt
+fig, axes = plt.subplots(3, 1)
+loss=ea.scalars.Items('Loss/train_loss')
+axes[0].plot([i.step for i in loss],[i.value for i in loss],label='loss', linewidth=1)
+axes[0].set_xlim(0)
+axes[0].set_ylim(0, 0.2)
+axes[0].set_yticks([0.02, 0.1, 0.2])
+axes[0].grid(True, linestyle='-.')
+
+avg_error=ea.scalars.Items('Quality/Avg_error')
+axes[1].plot([i.step for i in avg_error],[i.value for i in avg_error],label='avg_error', linewidth=1, color='mediumblue')
+axes[1].set_xlim(0)
+axes[1].set_ylim(0, 0.4)
+axes[1].set_yticks([0.2, 0.04, 0.4])
+axes[1].grid(True, linestyle='-.')
+
+fr=ea.scalars.Items('Quality/Failure_rate')
+axes[2].plot([i.step for i in fr],[i.value for i in fr],label='failure_rate', linewidth=1, color='c')
+axes[2].set_xlim(0)
+axes[2].set_yticks([1,0.5,0.04])
+axes[2].grid(True, linestyle='-.')
+axes[0].set_ylabel("Loss")
+axes[1].set_ylabel("NME")
+axes[2].set_ylabel("Failure rate")
+axes[2].set_xlabel("step")
+plt.show()
