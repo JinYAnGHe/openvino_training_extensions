@@ -11,3 +11,11 @@ data/*
 external/*
 
 *egg-info
+
+*.pth
+*.onnx
+*.xml
+*.bin
+
+*.tar.gz
+*.zip

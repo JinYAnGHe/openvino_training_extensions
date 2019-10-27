@@ -17,18 +17,12 @@ The crossroad detection network model provides detection of 3 class objects: veh
 
 ### Installation
 
-1. Download submodules
-```bash
-cd openvino_training_extensions
-git submodule update --init --recursive
-```
-
-2. Create virtual environment
+1. Create virtual environment
 ```bash
 virtualenv venv -p python3 --prompt="(pvb)"
 ```
 
-3. Modify `venv/bin/activate` to set environment variables
+2. Modify `venv/bin/activate` to set environment variables
 ```
 cat <<EOT >> venv/bin/activate
 export PYTHONPATH=\$PYTHONPATH:$(git rev-parse --show-toplevel)/external/models/research
@@ -37,42 +31,39 @@ export PYTHONPATH=\$PYTHONPATH:$(git rev-parse --show-toplevel)/external/models/
 EOT
 ```
 
-4. Activate virtual environment and setup OpenVINO variables
+3. Activate virtual environment and setup OpenVINO variables
 ```bash
 . venv/bin/activate
 ```
 
-5. Install modules
+4. Install modules
 ```
 pip3 install -r requirements.txt
 ```
 
-6. Build and install COCO API for python
+5. Download and prepare required submodules
 ```bash
-cd $(git rev-parse --show-toplevel)/external/cocoapi
-2to3 . -w
-cd PythonAPI
-make install
+bash ../prepare_modules.sh
 ```
 
 ## Training and evaluation example
 
 **NOTE** To train model on own dataset you should change `num_steps: 10` in `configs/pipeline.config`.
 
-1. Go to `openvino_training_extensions/tensorflow_toolkit/veh_ped_nonveh_ssd_mobilenetv2_detector/` directory
+1. Go to `openvino_training_extensions/tensorflow_toolkit/person_vehicle_bike_detector/` directory
 
 2. The example dataset has annotation in coco format. You can find it here:
-   `openvino_training_extensions/tensorflow_toolkit/veh_ped_nonveh_ssd_mobilenetv2_detector/dataset`
+   `openvino_training_extensions/data/airport`
    To collect annotation used [COCO object detection format](http://cocodataset.org/#format-data). .
 
 3. To convert the dataset to tfrecords you have to run:
    ```bash
    python ./tools/create_crossroad_extra_tf_records.py \
-       --train_image_dir=./dataset/ssd_mbv2_data_train \
-       --val_image_dir=./dataset/ssd_mbv2_data_val/ \
-       --train_annotations_file=./dataset/annotation_example_train.json \
-       --val_annotations_file=./dataset/annotation_example_val.json \
-       --output_dir=dataset/tfrecords
+       --train_image_dir=../../data/airport/train/ \
+       --val_image_dir=../../data/airport/val/ \
+       --train_annotations_file=../../data/airport/annotation_example_train.json \
+       --val_annotations_file=../../data/airport/annotation_example_val.json \
+       --output_dir=../../data/airport/tfrecords
    ```
 
 4. To start training you have to run:
@@ -106,8 +97,8 @@ python ../../external/models/research/object_detection/export_inference_graph.py
 
 ```Bash
 python tools/infer.py --model=model/export_10/frozen_inference_graph.pb \
-  --label_map=dataset/crossroad_label_map.pbtxt \
-  dataset/ssd_mbv2_data_val/image_000000.jpg
+  --label_map=../../data/airport/crossroad_label_map.pbtxt \
+  ../../data/airport/val/image_000000.jpg
 ```
 
 ## Conversion to Intermediate Representation (IR) of the network

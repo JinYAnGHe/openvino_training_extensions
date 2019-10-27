@@ -23,23 +23,17 @@ inference.
   sudo apt install 2to3 protobuf-compiler
   ```
 
-1. Download submodules
-  ```Bash
-  cd openvino_training_extensions
-  git submodule update --init --recommend-shallow external/cocoapi external/models
-  ```
-
-2. Compile Protobuf libraries
-  ```Bash
-  cd openvino_training_extensions/external/models/research/
-  protoc object_detection/protos/*.proto --python_out=.
-  ```
-
 ## Models
 After installation, you are ready to train your own models, evaluate them, use
 them for predictions.
 
+* [Action Detection](action_detection)
+* [Image retrieval](image_retrieval)
 * [License Plate Recognition](lpr)
 * [Person Vehicle Bike Detector](person_vehicle_bike_detector)
+* [SSD MobileNet FPN 602](ssd_mobilenet_fpn_602)
 * [SSD Object Detection](ssd_detector)
+* [Text detection](text_detection)
+* [Text recognition](text_recognition)
 * [Vehicle Attributes](vehicle_attributes)
+* [Image Retrieval](image_retrieval)

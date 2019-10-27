@@ -32,11 +32,26 @@ inference.
   * [Face recognition](pytorch_toolkit/face_recognition)
   * [Human pose estimation](pytorch_toolkit/human_pose_estimation)
   * [Instance segmentation](pytorch_toolkit/instance_segmentation)
+  * [Object Detection](pytorch_toolkit/object_detection)
+    - [Face Detection](pytorch_toolkit/object_detection/face_detection.md)
+    - [Person Vehicle Bike Detector](pytorch_toolkit/object_detection/person_vehicle_bike_detection.md)
+  * [Segmentation of thoracic organs](pytorch_toolkit/segthor)
   * [Super resolution](pytorch_toolkit/super_resolution)
 
 * [TensorFlow](tensorflow_toolkit)
 
+  * [Action Detection](tensorflow_toolkit/action_detection)
+  * [Image retrieval](tensorflow_toolkit/image_retrieval)
   * [License Plate Recognition](tensorflow_toolkit/lpr)
   * [Person Vehicle Bike Detector](tensorflow_toolkit/person_vehicle_bike_detector)
+  * [SSD MobileNet FPN 602](tensorflow_toolkit/ssd_mobilenet_fpn_602)
   * [SSD Object Detection](tensorflow_toolkit/ssd_detector)
+  * [Text detection](tensorflow_toolkit/text_detection)
+  * [Text recognition](tensorflow_toolkit/text_recognition)
   * [Vehicle Attributes](tensorflow_toolkit/vehicle_attributes)
+
+# Tools
+
+* [PyTorch](pytorch_toolkit)
+
+  * [Neural Networks Compression Framework](pytorch_toolkit/nncf)
