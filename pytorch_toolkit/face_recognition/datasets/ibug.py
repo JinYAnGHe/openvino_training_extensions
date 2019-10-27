@@ -13,9 +13,9 @@ class IBUG(Dataset):
         self.landmarks_folder_path = landmarks_folder_path
         self.test = test
 
-        landmarks_file_name = 'train_aug.txt'
+        landmarks_file_name = 'train.txt'
         if self.test:
-            landmarks_file_name = 'test_gray.txt'
+            landmarks_file_name = 'ibug.txt'
 
         self.landmarks_file = open(osp.join(landmarks_folder_path, landmarks_file_name), 'r')
         self.sample_info = self._read_samples_info()
@@ -43,8 +43,8 @@ class IBUG(Dataset):
         return len(self.sample_info)
 
     def __getitem__(self, idx):
-        img = cv.cvtColor(cv.imread(self.sample_info[idx][0], cv.IMREAD_GRAYSCALE), cv.COLOR_GRAY2RGB)
-        # img = cv.imread(self.sample_info[idx][0], cv.IMREAD_COLOR)
+        # img = cv.cvtColor(cv.imread(self.sample_info[idx][0], cv.IMREAD_GRAYSCALE), cv.COLOR_GRAY2RGB)
+        img = cv.imread(self.sample_info[idx][0], cv.IMREAD_COLOR)
         with open(self.sample_info[idx][1], 'r') as f:
             landmarks = np.array(json.load(f))
         data = {'img': img, 'landmarks': landmarks}

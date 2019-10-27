@@ -215,7 +215,7 @@ class RandomErasing:
             'pixel' - erase block is per-pixel random (normal) color
     """
  
-    def __init__(self, p=0.5, min_aspect=0.3,mode='const'):
+    def __init__(self, p=1.0, min_aspect=0.3,mode='const'):
         self.p = p
         self.min_aspect = min_aspect
         mode = mode.lower()

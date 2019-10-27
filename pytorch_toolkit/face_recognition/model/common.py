@@ -30,6 +30,7 @@ from .rmnet_angular import RMNetAngular
 from .mobilefacenet import MobileFaceNet
 from .dsm_landnet import DsmNet
 from .dsm_landnet_112 import DsmNet112
+from .cnn6 import CNN6
 from .mobilelandnet import MobileLandNet
 from .landnet import LandmarksNet
 from .resnet_angular import ResNetAngular
@@ -40,4 +41,4 @@ from .shufflenet_v2_angular import ShuffleNetV2Angular
 models_backbones = {'rmnet': RMNetAngular, 'mobilenet': MobileFaceNet, 'resnet': ResNetAngular,
                     'shufflenetv2': ShuffleNetV2Angular, 'se_resnet': SEResNetAngular}
 
-models_landmarks = {'landnet': LandmarksNet, 'dsmnet': DsmNet, 'dsmnet112': DsmNet112, 'mobilelandnet': MobileLandNet}
+models_landmarks = {'landnet': LandmarksNet, 'dsmnet': DsmNet, 'dsmnet112': DsmNet112, 'mobilelandnet': MobileLandNet, 'cnn6': CNN6}

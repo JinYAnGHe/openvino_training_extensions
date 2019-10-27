@@ -1,5 +1,6 @@
 import torch.nn as nn
 # import torch
+import math
 from .common import ModelInterface
 
 
@@ -46,18 +47,17 @@ class CNN6(ModelInterface):
         pass
 
     def init_weights(self):
-    """Initializes weights of the model before training"""
-    for m in self.modules():
-        if isinstance(m, nn.Conv2d):
-            n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            m.weight.data.normal_(0, math.sqrt(2. / n))
-            if m.bias is not None:
-                m.bias.data.zero_()
-        elif isinstance(m, nn.BatchNorm2d):
-            if m.weight is not None:
-                m.weight.data.fill_(1)
-            if m.bias is not None:
-                m.bias.data.zero_()
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            elif isinstance(m, nn.BatchNorm2d):
+                if m.weight is not None:
+                    m.weight.data.fill_(1)
+                if m.bias is not None:
+                    m.bias.data.zero_()
 # def main():
 #     input = torch.randint(0, 255, (2, 3, 64, 64), dtype=torch.float32)
 

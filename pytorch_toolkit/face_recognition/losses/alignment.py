@@ -30,34 +30,7 @@ class AlignmentLoss(nn.Module):
         self.uniform_weights = True
         self.weights = None
         self.core_func_type = loss_type
-        self.eps = 0.031
-        self.w = 0.156
-
-    def set_weights(self, weights):
-        """Set weights for the each landmark point in loss"""
-        self.uniform_weights = False
-        self.weights = torch.FloatTensor(weights).cuda()
-
-    def forward(self, input_values, target):
-        bs = input_values.shape[0]
-        target = torch.squeeze(target)
-        loss = input_values - target
-        n_points = loss.shape[1] // 2
-        loss = loss.view(-1, n_points, 2)
-
-        if self.core_func_type == 'l2':
-            loss = torch.norm(loss, p=2, dim=2)
-            # loss = loss.pow(2)
-            # eyes_dist = (torch.norm(target[:, 0:2] - target[:, 10:12], p=2, dim=1).reshape(-1)).pow_(2)
-            eyes_dist = (torch.norm(target[:, 0:2] - target[:, 18:20], p=2, dim=1).reshape(-1)).pow_(2)
-        elif self.core_func_type == 'l1':
-            loss = torch.norm(loss, p=1, dim=2)
-            eyes_dist = (torch.norm(target[:, 0:2] - target[:, 18:20], p=1, dim=1).reshape(-1))
-        elif self.core_func_type == 'wing':
-            wing_const = self.w - wing_core(self.w, self.w, self.eps)
-            loss = torch.abs(loss)
-            loss[loss < wing_const] = self.w*torch.log(1. + loss[loss < wing_const] / self.eps)
-            loss[loss >= wing_const] -= wing_const
+        self.eps = 0.031       
             loss = torch.sum(loss, 2)
             eyes_dist = (torch.norm(target[:, 0:2] - target[:, 18:20], p=1, dim=1).reshape(-1))
 

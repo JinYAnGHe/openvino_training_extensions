@@ -39,7 +39,7 @@ def evaluate(val_loader, model):
     for _, data in enumerate(tqdm(val_loader), 0):
         data, gt_landmarks = data['img'].cuda(), data['landmarks'].cuda()
         predicted_landmarks = model(data)
-        gt_landmarks = gt_landmarks.view(-1, 32)
+        gt_landmarks = gt_landmarks.view(-1, 136)
         loss = predicted_landmarks - gt_landmarks
         items_num += loss.shape[0]
         n_points = loss.shape[1] // 2
@@ -47,13 +47,12 @@ def evaluate(val_loader, model):
         per_point_error = torch.norm(per_point_error, p=2, dim=2)
         avg_error = torch.sum(per_point_error, 1) / n_points
      
-        eyes_dist = torch.norm(gt_landmarks[:, 0:2] - gt_landmarks[:, 18:20], p=2, dim=1).reshape(-1)
+        eyes_dist = torch.norm(gt_landmarks[:, 72:74] - gt_landmarks[:, 90:92], p=2, dim=1).reshape(-1)
         
         per_point_error = torch.div(per_point_error, eyes_dist.view(-1, 1))
         total_pp_error += torch.sum(per_point_error, 0)
 
         avg_error = torch.div(avg_error, eyes_dist)
-        # print(avg_error)
         failures_num += torch.nonzero(avg_error > 0.1).shape[0]
         total_loss += torch.sum(avg_error)
 
@@ -64,12 +63,12 @@ def start_evaluation_300w(args):
     dataset = IBUG(args.val, args.v_land, test=True)
     dataset.transform = t.Compose([Rescale((112, 112)), ToTensor(switch_rb=True)])
     val_loader = DataLoader(dataset, batch_size=args.val_batch_size, num_workers=4, shuffle=False, pin_memory=True)
-    writer = SummaryWriter('./logs_landm/LandNet-G')
-    for i in range(20000, 69501, 500):
+    writer = SummaryWriter('./logs_landm/LandNet-68-single-ibug')
+    for i in range(0, 12001, 200):
         model = models_landmarks['mobilelandnet']()
         # assert args.snapshot is not None
         log.info('Testing snapshot ' + "./snapshots/LandNet_{}.pt".format(str(i)) + ' ...')
-        model = load_model_state(model, "./LandNet/LandNet_{}.pt".format(str(i)), args.device, eval_state=True)
+        model = load_model_state(model, "./snapshots/LandNet-68single_{}.pt".format(str(i)), args.device, eval_state=True)
         model.eval()
         cudnn.benchmark = True
         # model = torch.nn.DataParallel(model)

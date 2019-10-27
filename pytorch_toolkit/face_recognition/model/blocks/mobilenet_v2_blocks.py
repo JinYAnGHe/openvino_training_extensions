@@ -37,7 +37,7 @@ class InvertedResidual(nn.Module):
 
             nn.Conv2d(in_channels * expand_ratio, out_channels, 1, 1, 0, bias=False),
             nn.BatchNorm2d(out_channels),
-            SELayer(out_channels, 8, nn.PReLU, outp_size)
+            # SELayer(out_channels, 8, nn.PReLU, outp_size)
         )
 
     def forward(self, x):

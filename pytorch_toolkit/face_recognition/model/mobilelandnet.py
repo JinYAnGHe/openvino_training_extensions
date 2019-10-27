@@ -6,7 +6,7 @@ from model.blocks.mobilenet_v2_blocks import InvertedResidual
 from model.blocks.shared_blocks import make_activation
 from .common import ModelInterface
 
-def init_block(in_channels, out_channels, stride, activation=nn.ReLU):
+def init_block(in_channels, out_channels, stride, activation=nn.PReLU):
     """Builds the first block of the MobileFaceNet"""
     return nn.Sequential(
         nn.BatchNorm2d(3),
@@ -29,7 +29,7 @@ class MobileLandNet(ModelInterface):
             [2, 64, 5, 2],
             [2, 128, 1, 2],
             [4, 128, 6, 1],
-            [2, 128, 1, 1]
+            [2, 16, 1, 1]
         ]
 
         first_channel_num = 64
@@ -38,7 +38,7 @@ class MobileLandNet(ModelInterface):
         self.features.append(nn.Conv2d(first_channel_num, first_channel_num, 3, 1, 1,
                                        groups=first_channel_num, bias=False))
         self.features.append(nn.BatchNorm2d(64))
-        self.features.append(nn.ReLU())
+        self.features.append(nn.PReLU())
 
         # Inverted Residual Blocks
         in_channel_num = first_channel_num
@@ -58,26 +58,29 @@ class MobileLandNet(ModelInterface):
 
         self.s1 = nn.Sequential(*self.features)
         self.fc_channel_num = 14*14*in_channel_num + 7*7*in_channel_num*2 + embedding_size
+        # self.fc_channel_num = 3*3*embedding_size
         # feature block
         self.conv1 = nn.Sequential(nn.Conv2d(in_channel_num, 2*in_channel_num, 3, 2, 1, bias=False),
                                    nn.BatchNorm2d(2*in_channel_num),
-                                   nn.ReLU())
+                                   nn.PReLU())
         self.conv2 = nn.Sequential(nn.Conv2d(2*in_channel_num, embedding_size, 7, 1, 0, bias=False),
                                    nn.BatchNorm2d(embedding_size),
-                                   nn.ReLU())
-        self.fc_loc = nn.Linear(self.fc_channel_num, 32)
+                                   nn.PReLU())
+        # self.conv2 = nn.Sequential(nn.Conv2d(2*in_channel_num, embedding_size, 3, 2, 0, bias=False),
+        #                     nn.BatchNorm2d(embedding_size),
+        #                     nn.PReLU())
+        self.fc_loc = nn.Linear(self.fc_channel_num, 136)
+        # self.fc_loc = nn.Sequential(nn.Linear(self.fc_channel_num, 136),
+        #                             nn.Sigmoid())
         self.init_weights()
 
     def forward(self, x):
         s1 = self.s1(x)
         s2 = self.conv1(s1)
         s3 = self.conv2(s2)
-        # s1 = s1.view(s1.size(0), -1)
-        # s2 = s2.view(s2.size(0), -1)
-        # s3 = s3.view(s3.size(0), -1)
-        s1 = torch.flatten(s1, start_dim=1)
-        s2 = torch.flatten(s2, start_dim=1)
-        s3 = torch.flatten(s3, start_dim=1)
+        s1 = s1.view(s1.size(0), -1)
+        s2 = s2.view(s2.size(0), -1)
+        s3 = s3.view(s3.size(0), -1)
         out = torch.cat((s1, s2, s3), dim=1)
         out = self.fc_loc(out)
         return out
